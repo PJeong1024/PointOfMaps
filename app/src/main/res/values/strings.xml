@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">PointOfMaps</string>
+    <string name="title_activity_maps">MapsActivity</string>
+
+    <!--    Main activity string-->
+    <string name="tab_name_pictures_by_map">Pictures by Map</string>
+    <string name="tab_name_pictures_by_address">Pictures by Address</string>
+    <string name="tab_name_temp">Temp</string>
+    <string name="string_grant_permission_storage">Please agree to grant permission to use your storage.</string>
+    <string name="string_grant_permission_location">Please agree to grant permission to know your location.</string>
+    <string name="string_grant_permission_media_location">Please agree to grant permission to know your image\'s location.</string>
+    <string name="string_without_permission_guide">Without Permission agreement, App couldn\'t run.</string>
+
+    <!--    Common activity string-->
+    <string name="string_falied_to_load_image">Failed to load image files.</string>
+
+    <!--    Common activity string-->
+    <string name="msg_app_version_is_not_correct">App version is not correct to run.</string>
+
+</resources>
