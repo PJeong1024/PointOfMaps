@@ -18,6 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.example.pointofmaps.addr.ImgAddrFragment
 import com.example.pointofmaps.classes.*
 import com.example.pointofmaps.maps.ImgMapFragment
+import com.example.pointofmaps.translate.TranslateFragment
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
@@ -147,8 +148,8 @@ class MainActivity : AppCompatActivity() {
         TabLayoutMediator(mLayout, mPager) { tab, position ->
             when (position) {
                 0    -> tab.text = getString(R.string.tab_name_pictures_by_map)
-                1    -> tab.text = getString(R.string.tab_name_pictures_by_address)
-                2    -> tab.text = getString(R.string.tab_name_temp)
+                1    -> tab.text = getString(R.string.tab_name_text_translation)
+                2    -> tab.text = getString(R.string.tab_name_pictures_by_address)
                 else -> tab.text = "-"
             }
         }.attach()
@@ -172,7 +173,7 @@ class MainActivity : AppCompatActivity() {
         override fun createFragment(position: Int): Fragment {
             return when (position) {
                 0    -> ImgMapFragment()
-                1    -> ImgAddrFragment()
+                1    -> TranslateFragment()
                 2    -> ImgAddrFragment()
                 else -> ImgAddrFragment()
             }

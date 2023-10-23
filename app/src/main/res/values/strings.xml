@@ -4,6 +4,7 @@
 
     <!--    Main activity string-->
     <string name="tab_name_pictures_by_map">Pictures by Map</string>
+    <string name="tab_name_text_translation">Text Translation</string>
     <string name="tab_name_pictures_by_address">Pictures by Address</string>
     <string name="tab_name_temp">Temp</string>
     <string name="string_grant_permission_storage">Please agree to grant permission to use your storage.</string>
@@ -16,5 +17,8 @@
 
     <!--    Common activity string-->
     <string name="msg_app_version_is_not_correct">App version is not correct to run.</string>
+    <string name="translated_text_is_here">Translated Text is here</string>
+    <string name="translate_button">Translate Text</string>
+    <string name="input_text">input text</string>
 
 </resources>
