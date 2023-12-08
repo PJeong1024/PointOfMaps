@@ -51,30 +51,38 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isAllPermissionIsAgreed()) {
+            refreshImgListToDB()
+            updateImgAddrToDB()
+        }
+    }
+
     private fun refreshImgListToDB() {
         mCoroutineJob = mCoroutineScope.launch(Dispatchers.IO) {
             Log.i(FeatureValues.AppName, "Dispatchers.IO : start")
-            val wholeImgList = ImgFIleInterfaces().ReadImgListFromStorage(this@MainActivity)!!
+            val wholeImgList = ImgFIleInterfaces().readImgListFromStorage(this@MainActivity)
             wholeImgList.sortByDescending { userImg -> userImg.imageDateTaken }
+            Log.i(FeatureValues.AppName, "wholeImgList.size : " + wholeImgList.size)
             for (userImg in wholeImgList) {
                 if (!userImg.imageDisplayName.contains(".jpg")) {
-//                    Log.i(FeatureValues.AppName, "not a JPEG image format : " + userImg.imageDisplayName)
+                    Log.i(FeatureValues.AppName, "not a JPEG image format : " + userImg.imageDisplayName)
                     continue
                 }
 
-                val locatedImg = ImgFIleInterfaces().ReadExifDataFromImgFilesUnderQ(this@MainActivity, userImg)
+                val locatedImg = ImgFIleInterfaces().readExifDataFromImgFilesUnderQ(this@MainActivity, userImg)
                 if (locatedImg.getLatLong() == null) {
-//                    Log.i(FeatureValues.AppName, "image do not have LatLng : " + userImg.imageDisplayName)
+                    Log.i(FeatureValues.AppName, "image do not have LatLng : " + userImg.imageDisplayName)
                     continue
                 }
 
-                var foundImgFromDB = UserImg()
-                foundImgFromDB = mDao.findByName(locatedImg.imageID, locatedImg.imageDisplayName)
+                val foundImgFromDB = mDao.findByName(locatedImg.imageID, locatedImg.imageDisplayName)
 
                 if (foundImgFromDB == null) {
                     mDao.insert(locatedImg)
                 } else if (foundImgFromDB.isSameImg(locatedImg)) {
-//                    Log.i(FeatureValues.AppName, "image already in DB : " + userImg.imageDisplayName)
+                    Log.i(FeatureValues.AppName, "image already in DB : " + userImg.imageDisplayName)
                     continue
                 } else {
                     mDao.insert(locatedImg)
@@ -100,12 +108,12 @@ class MainActivity : AppCompatActivity() {
                 limitedRequest++
                 val geocoder = Geocoder(this@MainActivity, Locale.getDefault())
                 try {
-                    if (Build.VERSION.SDK_INT >= 33) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         geocoder.getFromLocation(targetItem!!.imageLat!!, targetItem.imageLong!!, 1, object : Geocoder.GeocodeListener {
                             override fun onGeocode(addrs: MutableList<Address>) {
                                 Log.i(FeatureValues.AppName, "onGeocode : " + addrs[0].countryName)
                                 limitedRequest--
-                                targetItem.imageCountryName = addrs[0].countryName
+                                targetItem.imageAddress = addrs[0].locality + ", " + addrs[0].adminArea + ", " + addrs[0].countryName
                                 mDao.update(targetItem)
                             }
 
@@ -117,9 +125,9 @@ class MainActivity : AppCompatActivity() {
                         })
                     } else {
                         Log.i(FeatureValues.AppName, "Build.VERSION.SDK_INT < 33")
-                        val addresses = geocoder.getFromLocation(targetItem!!.imageLat!!, targetItem.imageLong!!, 5)!!
+                        @Suppress("DEPRECATION") val addresses = geocoder.getFromLocation(targetItem!!.imageLat!!, targetItem.imageLong!!, 5)!!
                         Log.i(FeatureValues.AppName, "addresses : $addresses")
-                        targetItem.imageCountryName = addresses[0].countryName
+                        targetItem.imageAddress = addresses[0].locality + ", " + addresses[0].adminArea + ", " + addresses[0].countryName
                         mDao.update(targetItem)
                         limitedRequest--
                     }
@@ -188,7 +196,9 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
             return false
         } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_MEDIA_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_MEDIA_LOCATION), PERMISSIONS_REQUEST_ACCESS_MEDIA_LOCATION)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_MEDIA_LOCATION), PERMISSIONS_REQUEST_ACCESS_MEDIA_LOCATION)
+            }
             return false
         }
         return true

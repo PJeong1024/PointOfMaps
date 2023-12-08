@@ -24,9 +24,9 @@ class ClusterImgListHorizontalScrollActivity : AppCompatActivity() {
         val intent = intent
         if (intent != null) {
             mClickedClusterListInfo = if (Build.VERSION.SDK_INT >= 33) {
-                (intent.getSerializableExtra(FeatureValues.IMG_ARRAYLIST, UserImg::class.java) as ArrayList<UserImg>?)!!
+                (intent.getParcelableArrayListExtra(FeatureValues.IMG_ARRAYLIST, UserImg::class.java) as ArrayList<UserImg>?)!!
             } else {
-                (intent.getSerializableExtra(FeatureValues.IMG_ARRAYLIST) as ArrayList<UserImg>?)!!
+                (intent.getParcelableExtra(FeatureValues.IMG_ARRAYLIST) as ArrayList<UserImg>?)!!
             }
             selectedImgPositon = intent.getIntExtra(FeatureValues.IMG_POSITION_IN_ARRAYLIST, 0)
         } else {
@@ -49,7 +49,7 @@ class ClusterImgListHorizontalScrollActivity : AppCompatActivity() {
             bundle.putInt(FeatureValues.IMG_ID, imgInfoStrings.imageID)
             bundle.putString(FeatureValues.IMG_PATH, imgInfoStrings.imageDataPath)
             bundle.putString(FeatureValues.IMG_FILENAME, imgInfoStrings.imageDisplayName)
-            bundle.putParcelable(FeatureValues.IMG_LOCATION, LatLng(imgInfoStrings.imageLat!!, imgInfoStrings.imageLong!!) )
+            bundle.putString(FeatureValues.IMG_ADDRESS, imgInfoStrings.imageAddress)
             bundle.putInt(FeatureValues.IMG_ORIENTATION, imgInfoStrings.imageOri)
             fragment.arguments = bundle
             return fragment

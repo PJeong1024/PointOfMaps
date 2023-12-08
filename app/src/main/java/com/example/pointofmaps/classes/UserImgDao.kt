@@ -15,7 +15,7 @@ interface UserImgDao {
     @Query("SELECT * FROM UserImg WHERE imageID LIKE :imgID AND imageDisplayName LIKE :imgName LIMIT 1")
     fun findByName(imgID: Int, imgName: String): UserImg
 
-    @Query("SELECT * FROM UserImg WHERE imageCountryName IS NULL")
+    @Query("SELECT * FROM UserImg WHERE imageAddress = ''")
     fun getImagesWithoutLocation(): List<UserImg>
 
     @Insert

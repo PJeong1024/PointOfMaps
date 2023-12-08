@@ -22,9 +22,9 @@ class TabClusterListDisplayActivity : AppCompatActivity() {
         if (intent != null) {
             Log.i(FeatureValues.AppName, "onCreate intent != null : ")
             mClickedClusterListInfo = if (Build.VERSION.SDK_INT >= 33) {
-                (intent.getSerializableExtra(FeatureValues.IMG_ARRAYLIST, UserImg::class.java) as ArrayList<UserImg>?)!!
+                intent.getParcelableArrayListExtra(FeatureValues.IMG_ARRAYLIST, UserImg::class.java) ?: arrayListOf()
             } else {
-                (intent.getSerializableExtra(FeatureValues.IMG_ARRAYLIST) as ArrayList<UserImg>?)!!
+                (intent.getParcelableExtra(FeatureValues.IMG_ARRAYLIST) as ArrayList<UserImg>?)!!
             }
             Log.i(FeatureValues.AppName, "onCreate mClickedClusterListInfo : " + mClickedClusterListInfo.size)
         } else {

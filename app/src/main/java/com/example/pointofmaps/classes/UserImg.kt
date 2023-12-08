@@ -1,14 +1,13 @@
 package com.example.pointofmaps.classes
 
+import android.location.Address
 import android.os.Parcel
 import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.clustering.ClusterItem
-import java.io.Serializable
 
 @Entity
 data class UserImg(
@@ -20,24 +19,25 @@ data class UserImg(
     @ColumnInfo var imageDateTaken: Long = 0L,
     @ColumnInfo var imageOri: Int = 0,
     @ColumnInfo var imageSize: Long = 0L,
-    @ColumnInfo var imageCountryName: String? = null) : ClusterItem, Serializable {
+    @ColumnInfo var imageAddress: String = "") : ClusterItem, Parcelable {
     init {
 
     }
 
-//    constructor(parcel: Parcel) : this() {
-//        imageID = parcel.readString().toString()
-//        imageDataPath = parcel.readString().toString()
-//        imageDisplayName = parcel.readString().toString()
-//        imageLatLong = parcel.readParcelable(LatLng::class.java.classLoader)
-//        imageDateTaken = parcel.readString()
-//        imageOri = parcel.readInt()
-//        imageSize = parcel.readString()
-//        imageCountryName = parcel.readString()
-//    }
+    constructor(parcel: Parcel) : this(
+        parcel.readInt(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readValue(Double::class.java.classLoader) as? Double,
+        parcel.readValue(Double::class.java.classLoader) as? Double,
+        parcel.readLong(),
+        parcel.readInt(),
+        parcel.readLong(),
+        parcel.readString().toString()) {
+    }
 
     fun getLatLong(): LatLng? {
-        if (imageLat == 0.0 && imageLat == 0.0) {
+        if (imageLat == 0.0 && imageLong == 0.0) {
             return null
         }
         return LatLng(imageLat!!, imageLong!!)
@@ -49,11 +49,11 @@ data class UserImg(
     }
 
     override fun getTitle(): String? {
-        return null
+        return imageDisplayName
     }
 
     override fun getSnippet(): String? {
-        return null
+        return imageID.toString()
     }
 
     fun isEnabled(): Boolean {
@@ -75,29 +75,30 @@ data class UserImg(
         return false
     }
 
-//    override fun describeContents(): Int {
-//        return this.hashCode()
-//    }
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeInt(imageID)
+        parcel.writeString(imageDataPath)
+        parcel.writeString(imageDisplayName)
+        parcel.writeValue(imageLat)
+        parcel.writeValue(imageLong)
+        parcel.writeLong(imageDateTaken)
+        parcel.writeInt(imageOri)
+        parcel.writeLong(imageSize)
+        parcel.writeString(imageAddress)
+    }
 
-//    override fun writeToParcel(dest: Parcel, flags: Int) {
-//        dest.writeString(imageID)
-//        dest.writeString(imageDataPath)
-//        dest.writeString(imageDisplayName)
-//        dest.writeParcelable(imageLatLong, flags)
-//        dest.writeString(imageDateTaken)
-//        dest.writeInt(imageOri)
-//        dest.writeString(imageSize)
-//        dest.writeString(imageCountryName)
-//    }
+    override fun describeContents(): Int {
+        return 0
+    }
 
-//    companion object CREATOR : Parcelable.Creator<UserImg> {
-//        override fun createFromParcel(parcel: Parcel): UserImg {
-//            return UserImg(parcel)
-//        }
-//
-//        override fun newArray(size: Int): Array<UserImg?> {
-//            return arrayOfNulls(size)
-//        }
-//    }
+    companion object CREATOR : Parcelable.Creator<UserImg> {
+        override fun createFromParcel(parcel: Parcel): UserImg {
+            return UserImg(parcel)
+        }
+
+        override fun newArray(size: Int): Array<UserImg?> {
+            return arrayOfNulls(size)
+        }
+    }
 
 }

@@ -12,6 +12,7 @@ class FeatureValues {
         var IMG_PATH = "img_path"
         var IMG_FILENAME = "img_filename"
         var IMG_LOCATION = "img_location"
+        var IMG_ADDRESS = "img_address"
         var IMG_ORIENTATION = "img_orientation"
     }
 

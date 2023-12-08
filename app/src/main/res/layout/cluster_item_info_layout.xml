@@ -6,8 +6,9 @@
 
     <ImageView
         android:id="@+id/cluster_item_info_imgview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_width="@dimen/cluster_item_list_img_width"
+        android:layout_height="@dimen/cluster_item_list_img_height"
+        android:scaleType="fitXY"/>
 
     <TextView
         android:id="@+id/cluster_item_info_textview"
